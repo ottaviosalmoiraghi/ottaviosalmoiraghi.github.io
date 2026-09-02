@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import RecipesPage from "./pages/RecipesPage";
 import RecipeDetail from "./pages/RecipeDetail";
@@ -12,7 +12,7 @@ import ListMakerPage from "./pages/ListMakerPage";
 export default function App() {
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <NavBar />
         <Routes>
           <Route path="/" element={<Navigate to="/recipes" replace />} />
@@ -23,7 +23,7 @@ export default function App() {
           <Route path="/recipes/:id/edit" element={<RecipeEdit />} />
           <Route path="/listmaker" element={<ListMakerPage />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </>
   );
 }
