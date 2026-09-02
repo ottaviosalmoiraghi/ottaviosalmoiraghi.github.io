@@ -108,3 +108,60 @@ export function removeMealFromDay(dateKey, type, index) {
   saveMealPlan(updated);
   return updated;
 }
+
+// =========================
+// EXPORT RICETTE → JSON FILE
+// =========================
+export async function exportRecipesJSON() {
+  const recipes = loadRecipes(); // le tue ricette da localStorage/IndexedDB
+
+  const data = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    recipes
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "recipes-backup.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+
+// =========================
+// IMPORT RICETTE ← JSON FILE
+// =========================
+export async function importRecipesJSON(file, { mode = "merge" } = {}) {
+  const text = await file.text();
+  const json = JSON.parse(text);
+
+  if (!json.recipes || !Array.isArray(json.recipes)) {
+    throw new Error("File JSON non valido: manca 'recipes'.");
+  }
+
+  const current = loadRecipes();
+
+  let final;
+
+  if (mode === "overwrite") {
+    final = json.recipes;
+  } else {
+    // MERGE: evita duplicati per ID
+    const map = new Map();
+    current.forEach(r => map.set(r.id, r));
+    json.recipes.forEach(r => map.set(r.id, r));
+    final = Array.from(map.values());
+  }
+
+  saveRecipes(final);
+
+  return final.length;
+}
