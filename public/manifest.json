@@ -1,7 +1,8 @@
 {
-  "name": "Meal Planner",
-  "short_name": "MealPlanner",
-  "start_url": ".",
+  "name": "CiboReact",
+  "short_name": "CiboReact",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
