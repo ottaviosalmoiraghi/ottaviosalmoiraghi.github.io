@@ -81,18 +81,18 @@ export function saveMealPlan(plan) {
 
 export function addMealToDay(dateKey, mealId, type) {
   const plan = loadMealPlan();
-
   const day = plan[dateKey] || { lunch: [], dinner: [] };
 
   const updatedDay = {
     ...day,
-    [type]: [...day[type], mealId]
+    [type]: [...(day[type] || []), mealId]
   };
 
   const updated = { ...plan, [dateKey]: updatedDay };
   saveMealPlan(updated);
   return updated;
 }
+
 
 
 export function removeMealFromDay(dateKey, type, index) {

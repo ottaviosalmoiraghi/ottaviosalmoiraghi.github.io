@@ -13,7 +13,7 @@ export default function MealPlannerPage() {
   const [selectedDay, setSelectedDay] = useState(null);
   const [mealPlan, setMealPlan] = useState(loadMealPlan());
   const [newMeal, setNewMeal] = useState("");
-  const [recipes] = useState(loadRecipes());
+  const [recipes, setRecipes] = useState(loadRecipes());
   const [selectedRecipe, setSelectedRecipe] = useState("");
   const [showAddSection, setShowAddSection] = useState(false);
   const [mealType, setMealType] = useState("lunch");
@@ -76,8 +76,29 @@ export default function MealPlannerPage() {
     if (!newMeal.trim() || !selectedDay) return;
 
     const dateKey = `${currentYear}-${currentMonth + 1}-${selectedDay}`;
-    const updated = addMealToDay(dateKey, newMeal.trim());
-    setMealPlan(updated);
+
+    // 1. Genera ID
+    const id = crypto.randomUUID();
+
+    // 2. Crea ricetta manuale
+    const manualRecipe = {
+      id,
+      title: newMeal.trim(),
+      ingredients: [], // puoi aggiungere ingredienti in futuro
+    };
+
+    // 3. Salva nel DB locale
+    const allRecipes = loadRecipes();
+    const updatedRecipes = [...allRecipes, manualRecipe];
+    localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
+
+    setRecipes(updatedRecipes);
+
+    // 4. Salva l’ID nel Meal Planner
+    const updatedPlan = addMealToDay(dateKey, id, mealType);
+    setMealPlan(updatedPlan);
+
+    // 5. Reset input
     setNewMeal("");
   }
 
